@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant U as Usuário
+    participant K as Keypad
+    participant C as Calculadora
+    participant L as LCD
+
+    Note over U,L: Inicialização
+    U->>K: Pressiona tecla
+    K->>C: getKey()
+
+    alt É dígito ou ponto decimal
+        C->>C: adicionarNumero()
+        C->>L: atualizarDisplay()
+    else É operador matemático
+        C->>C: definirOperacao()
+        C->>L: atualizarDisplay()
+    else É igual (=)
+        C->>C: calcularResultado()
+        C->>C: converterNumero()
+        C->>C: realizarOperacao()
+        alt Operação válida
+            C->>L: exibirResultado()
+            Note over C,L: Aguarda 3 segundos
+            C->>C: limparCalculadora()
+            C->>L: clear()
+        else Divisão por zero
+            C->>L: exibirErro("Erro: Div/0")
+            Note over C,L: Aguarda 2 segundos
+            C->>C: limparCalculadora()
+            C->>L: clear()
+        end
+    end
+
+    alt Botão Clear pressionado
+        U->>C: limparCalculadora()
+        C->>L: clear()
+    else Botão +/- pressionado
+        U->>C: alternarSinal()
+        C->>L: atualizarDisplay()
+    else Botão % pressionado
+        U->>C: aplicarPorcentagem()
+        C->>L: atualizarDisplay()
+    else Botão Backspace pressionado
+        U->>C: apagarCaractere()
+        C->>L: atualizarDisplay()
+    end
